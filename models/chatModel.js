@@ -17,24 +17,26 @@ const chatSchema = new Schema(
     },
     participants: [
       {
-        type: mongoose.Schema.Types.ObjectId, // Array of users involved in the chat
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
     ],
     groupAdmin: {
-      type: mongoose.Schema.Types.ObjectId, // Reference to User(s) managing the group
+      type: mongoose.Schema.Types.ObjectId, 
       ref: "User",
     },
 
-    //messages: [messageSchema]//
-    lastMessage: {
-      type: mongoose.Schema.Types.ObjectId, // Reference to User(s) managing the group
-      ref: "Message",
-    },
+    
+    Messages: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Message",
+      },
+    ],
   },
   {
-    timestamps: true, // Automatically adds `createdAt` and `updatedAt`
+    timestamps: true, 
   }
 );
 

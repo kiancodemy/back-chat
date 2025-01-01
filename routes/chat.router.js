@@ -6,12 +6,17 @@ import {
   deleteGroup,
   renameGroup,
   createGroup,
+  removedGroup,
+  addGroup,
 } from "../controlers/chat.controler.js";
 const router = express.Router();
+
 router.post("/chatacess", AuthLogin, chataccess);
 router.get("/fetchChat", AuthLogin, fetchchat);
 router.post("/addMember", AuthLogin);
-router.post("/deleteMember", AuthLogin, deleteGroup);
-router.post("/renameGroup", AuthLogin, renameGroup);
+router.delete("/deleteMember", AuthLogin, deleteGroup);
+router.put("/renameGroup", AuthLogin, renameGroup);
 router.post("/createGroup", AuthLogin, createGroup);
+router.post("/ removedGroup", AuthLogin, removedGroup);
+router.post("/addGroup", AuthLogin, addGroup);
 export default router;

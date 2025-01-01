@@ -20,7 +20,7 @@ const userSchema = new Schema(
     },
     picture: {
       type: String,
-      default: "https://via.placeholder.com/150", // Replace with your desired default picture URL
+      default: "https://avatar.iran.liara.run/public", // Replace with your desired default picture URL
     },
   },
   {

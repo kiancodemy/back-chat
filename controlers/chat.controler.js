@@ -2,6 +2,7 @@ import { Chat } from "../models/chatModel.js";
 
 export const chataccess = async (req, res) => {
   const { userid } = req.body;
+
   if (!userid) {
     return res.status(400).json({ message: "Select the user" });
   }
@@ -13,7 +14,7 @@ export const chataccess = async (req, res) => {
     })
       .populate("participants", "-password")
       .populate({
-        path: "lastMessage",
+        path: "Messages",
         populate: { path: "sender", select: "name email _id" },
       });
 
@@ -46,11 +47,7 @@ export const fetchchat = async (req, res) => {
       participants: { $in: [req.user._id] },
     })
       .populate("participants", "-password")
-      .populate("groupAdmin", "-password")
-      .populate({
-        path: "lastMessage",
-        populate: { path: "sender", select: "name email _id" },
-      });
+      .populate("groupAdmin", "-password");
 
     if (chat) {
       res.status(200).json(chat);
@@ -85,6 +82,8 @@ export const createGroup = async (req, res) => {
 
 export const deleteGroup = async (req, res) => {
   try {
+    console.log("hi");
+    console.log(req.query.id);
     await Chat.findByIdAndDelete(req.query.id);
 
     res.status(201).json({ message: "deleted successfully" });
@@ -99,12 +98,53 @@ export const renameGroup = async (req, res) => {
     if (!id || !name) {
       throw new Error("fill all the informations");
     }
-    let find = await Chat.findById(id);
-    if (!find) {
-      throw new Error("there is no chat");
+    let find = await Chat.findByIdAndUpdate(
+      id,
+      { chatName: name },
+      { new: true }
+    )
+      .populate("participants", "-password")
+      .populate("groupAdmin", "-password");
+
+    res.status(201).json(find);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
+  }
+};
+
+export const addGroup = async (req, res) => {
+  try {
+    const { id, userid } = req.body;
+    if (!id || !userid) {
+      throw new Error("fill all the informations");
     }
-    find.chatName = name;
-    await find.save();
+    let find = await Chat.findByIdAndUpdate(
+      id,
+      { $push: { participants: userid } },
+      { new: true }
+    )
+      .populate("participants", "-password")
+      .populate("groupAdmin", "-password");
+
+    res.status(201).json(find);
+  } catch (err) {
+    res.status(401).json({ message: err.message });
+  }
+};
+
+export const removedGroup = async (req, res) => {
+  try {
+    const { id, userid } = req.body;
+    if (!id || !userid) {
+      throw new Error("fill all the informations");
+    }
+    let find = await Chat.findByIdAndUpdate(
+      id,
+      { $pull: { participants: userid } },
+      { new: true }
+    )
+      .populate("participants", "-password")
+      .populate("groupAdmin", "-password");
 
     res.status(201).json(find);
   } catch (err) {
