@@ -27,7 +27,7 @@ app.use("/message", Messagerouter);
 
 app.use("/chats", chatrouter);
 
-const PORT = 5000;
+const PORT = 4000;
 
 // Start server
 httpServer.listen(PORT, () => {
